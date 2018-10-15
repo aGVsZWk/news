@@ -61,10 +61,10 @@ Session(app)
 
 @app.route("/")
 def hello_world():
-
+    # 测试redis
     redis_store.set("name","laowang")
     print(redis_store.get("name"))
-
+    # 测试session
     session["protect"] = "myprotect"
     print(session.get("protect"))
 
