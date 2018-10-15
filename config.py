@@ -1,3 +1,4 @@
+import logging
 import redis
 
 
@@ -21,7 +22,8 @@ class Config(object):
     SESSION_USE_SIGNER = True
     PERMANENT_SESSION_LIFETIME = 3600*24*2 # 两天有效期，默认是秒
 
-
+    # 默认的日志等级
+    LEVEL = logging.DEBUG
 
 # 开发环境
 class DevelopConfig(Config):
@@ -30,11 +32,12 @@ class DevelopConfig(Config):
 
 # 生产环境(线上环境)
 class ProductConfig(Config):
-    pass
+    DEBUG = False
+    LEVEL = logging.ERROR
 
 # 测试环境
 class TestingConfig(Config):
-    pass
+    TESTING = True
 
 # 配置环境的统一访问入口
 config_dict = {

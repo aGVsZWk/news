@@ -20,7 +20,7 @@ from flask import current_app
 
 from info import create_app
 
-app = create_app("develop")
+app = create_app("product")
 
 
 @app.route("/")
@@ -28,8 +28,11 @@ def hello_world():
 
 
     # 使用logging日志输出内容
+    # create_app("product")配好，使用等级为error，下面=只显示error信息
     logging.debug("调试信息")
-    logging.error("炸了")
+    logging.info("详细信息")
+    logging.warning("警告信息")
+    logging.error("错误信息")
 
     # 使用current_app输出内容
     # current_app.logger.error("使用current_app.logger炸")
