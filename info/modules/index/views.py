@@ -1,5 +1,5 @@
+from info import redis_store
 from . import index_blu
-
 
 @index_blu.route("/")
 def hello_world():
@@ -16,8 +16,8 @@ def hello_world():
     # current_app.logger.error("使用current_app.logger炸")
 
     # 测试redis
-    # redis_store.set("name","laowang")
-    # print(redis_store.get("name"))
+    redis_store.set("name","laowang")
+    print(redis_store.get("name"))
 
     # 测试session
     # session["protect"] = "myprotect"

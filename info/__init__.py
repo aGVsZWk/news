@@ -7,8 +7,11 @@ from flask_sqlalchemy import SQLAlchemy
 import redis
 from flask_wtf import CSRFProtect
 from config import config_dict
-from info.modules.index import index_blu
+# from info.modules.index import index_blu
 
+
+# 定义redis_store
+redis_store = None
 
 def create_app(config_name):
 
@@ -28,12 +31,15 @@ def create_app(config_name):
     db = SQLAlchemy(app)
 
     # 创建redis对象
+    global redis_store
     redis_store = redis.StrictRedis(host=config.REIDS_HOST, port=config.REDIS_PORT, decode_responses=True)
 
     CSRFProtect(app)
 
     Session(app)
 
+    # 将首页蓝图对象index_blue注册到app
+    from info.modules.index import index_blu
     app.register_blueprint(index_blu)
 
     return app
