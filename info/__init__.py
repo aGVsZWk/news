@@ -30,11 +30,15 @@ def create_app(config_name):
     log_file(config.LEVEL)
 
     # 加载配置信息到app
+
+
+
     app.config.from_object(config)
 
     # 创建SQLAlchemy对象，关联app
     # db = SQLAlchemy(app) # 等价于db = SQLAlchemy() , db.init_app()
     db.init_app(app)
+
 
     # 创建redis对象
     global redis_store
@@ -44,10 +48,14 @@ def create_app(config_name):
 
     Session(app)
 
+
+
+
     # 将首页蓝图对象index_blue注册到app
     from info.modules.index import index_blu
     app.register_blueprint(index_blu)
 
+    print(app.url_map)
     return app
 
 
