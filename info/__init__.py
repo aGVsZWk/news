@@ -6,8 +6,8 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 import redis
 from flask_wtf import CSRFProtect
-
 from config import config_dict
+from info.modules.index import index_blu
 
 
 def create_app(config_name):
@@ -33,6 +33,8 @@ def create_app(config_name):
     CSRFProtect(app)
 
     Session(app)
+
+    app.register_blueprint(index_blu)
 
     return app
 
