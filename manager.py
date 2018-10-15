@@ -16,11 +16,22 @@
 """""
 
 
-from info import create_app
+from info import create_app,db,models
+from flask_script import Manager
+from flask_migrate import MigrateCommand,Migrate
 
 app = create_app("develop")
 
+# 创建Manager对象，关联app
+manager = Manager(app)
+
+# 使用Migrcate，关联app,db
+Migrate(app,db)
+
+manager.add_command("db",MigrateCommand)
 
 
 if __name__ == '__main__':
-    app.run()
+    # db.drop_all()
+    # db.create_all()
+    manager.run()
