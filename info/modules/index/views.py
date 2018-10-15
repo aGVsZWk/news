@@ -1,15 +1,6 @@
 from info import redis_store
 from . import index_blu
 from flask import render_template,current_app
-from info.utils.captcha.captcha import captcha
-
-#获取图片验证码
-@index_blu.route('/image_code')
-def image_code():
-
-    name,text,image_data =  captcha.generate_captcha()
-    # print(text)
-    return image_data
 
 
 @index_blu.route("/")
@@ -28,7 +19,7 @@ def hello_world():
 
     # 测试redis
     redis_store.set("name","laowang")
-    # print(redis_store.get("name"))
+    print(redis_store.get("name"))
 
     # 测试session
     # session["protect"] = "myprotect"

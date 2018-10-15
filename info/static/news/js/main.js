@@ -224,7 +224,6 @@ var preimageCodeId = ""
 // TODO 生成一个图片验证码的编号，并设置页面中图片验证码img标签的src属性
 function generateImageCode() {
 
-    /*
     //1.生成一个随机字符串
     imageCodeId = generateUUID();
 
@@ -236,7 +235,7 @@ function generateImageCode() {
 
     //4.记录上一次的编号
     preimageCodeId = imageCodeId
-    */
+
 }
 
 // 发送短信验证码
