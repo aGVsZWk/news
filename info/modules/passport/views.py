@@ -1,3 +1,5 @@
+from flask import current_app
+from flask import make_response
 from flask import request
 
 from info import redis_store,constants
@@ -34,12 +36,18 @@ def image_code():
     name,text,image_data = captcha.generate_captcha()
 
     # 4.判断是否有上个图片验证码编号
-    if pre_id:
-        redis_store.delete("image_code:%s"%pre_id)
+    try:
+        if pre_id:
+            redis_store.delete("image_code:%s"%pre_id)
 
-    # 5.保存一份到redis
-    redis_store.set("image_code:%s"%cur_id,text,constants.IMAGE_CODE_REDIS_EXPIRES)
+        # 5.保存一份到redis
+        redis_store.set("image_code:%s"%cur_id,text,constants.IMAGE_CODE_REDIS_EXPIRES)
+    except Exception as e:
+        current_app.log(e)
+        return "redis操作图片失败"
 
     # 6.返回图片验证码
-    return image_data
+    response = make_response(image_data)
+    response.headers["Content-Type"] = "image/jpg"
+    return response
 
