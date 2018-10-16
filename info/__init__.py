@@ -44,7 +44,7 @@ def create_app(config_name):
     global redis_store
     redis_store = redis.StrictRedis(host=config.REIDS_HOST, port=config.REDIS_PORT, decode_responses=True)
 
-    CSRFProtect(app)
+    # CSRFProtect(app)
 
     Session(app)
 
