@@ -193,7 +193,9 @@ $(function(){
                 //判断是否注册成功
                 if(resp.errno == '0'){
                     //重新加载当前页面
+                    alert(resp.errmsg);
                     window.location.reload()
+
                 }else{
                     alert(resp.errmsg);
                 }
@@ -205,16 +207,16 @@ $(function(){
 
 //退出登陆
 function logout() {
-    /*
+
     $.ajax({
         url:'/passport/logout',
         type:'post',
-        headers:{'X-CSRFToken':getCookie('csrf_token')},
+        // headers:{'X-CSRFToken':getCookie('csrf_token')},
         success:function (resp) {
             window.location.reload()
         }
     })
-    */
+
 }
 
 

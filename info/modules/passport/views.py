@@ -15,6 +15,27 @@ from info.utils.captcha.captcha import captcha
 
 
 
+
+# 功能描述：退出登陆
+# 请求路径: /passport/logout
+# 请求方式: POST
+# 请求参数: 无
+# 返回值: errno, errmsg
+@passport_blue.route("/logout",methods=["POST"])
+def logout():
+    # 1.清除session
+    session.pop("user_id",None)
+    session.pop("nick_name",None)
+    session.pop("mobile",None)
+
+    # 2.返回响应
+    return jsonify(errno=RET.OK,errmsg="退出成功")
+
+
+
+
+
+
 #功能描述: 登陆用户
 # 请求路径: /passport/login
 # 请求方式: POST
@@ -129,8 +150,6 @@ def register():
         redis_store.delete("smg_code:%s"%mobile)
     except Exception as e:
         return jsonify(errno=RET.NODATA, errmsg="删除短信验证码异常")
-
-
 
 
     # 7.校验传入的短信验证码和redis中短信验证码是否相等

@@ -1,10 +1,34 @@
 from info import redis_store
 from . import index_blu
 from flask import render_template,current_app
-
-
+from flask import session
+from info.models import User
 @index_blu.route("/")
 def hello_world():
+    # 1.取出session中的用户编号
+    user_id = session.get("user_id")
+
+    # 2.获取用户对象
+    user = None
+    if user_id:
+        try:
+            user = User.query.get(user_id)
+        except Exception as e:
+            current_app.logger.error(e)
+
+    # 3.拼接用户数据渲染界面
+    data = {
+        # 如果user不为空，返回左边的内容，为空返回右边的内容
+        "user_info":user.to_dict() if user else ""
+    }
+
+    return render_template("news/index.html",data=data)
+
+
+
+
+
+
 
 
     # 使用logging日志输出内容
@@ -25,7 +49,7 @@ def hello_world():
     # session["protect"] = "myprotect"
     # print(session.get("protect"))
 
-    return render_template("news/index.html")
+    # return render_template("news/index.html")
 
 @index_blu.route('/favicon.ico')
 def web_logo():
