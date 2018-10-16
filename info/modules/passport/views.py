@@ -5,11 +5,69 @@ from flask import current_app, make_response, jsonify
 from flask import json
 
 from flask import request
+from flask import session
+
 from info.models import User
 from info import redis_store, constants, db
 from info.utils.response_code import RET
 from . import passport_blue
 from info.utils.captcha.captcha import captcha
+
+
+
+#功能描述: 登陆用户
+# 请求路径: /passport/login
+# 请求方式: POST
+# 请求参数: mobile,password
+# 返回值: errno, errmsg
+@passport_blue.route("/login",methods=["POST"])
+def login():
+    """
+    1.获取参数
+    2.校验参数,为空校验
+    3.根据手机号,查询用户对象
+    4.判断用户对象是否存在
+    5.判断密码是否正确
+    6.将用的登陆信息,保存到session
+    7.返回响应
+    :return:
+    """
+    # 1.获取参数
+    mobile = request.json.get("mobile")
+    password = request.json.get("password")
+
+    # 2.校验参数，为空校验
+    if not all([mobile,password]):
+        return jsonify(errno=RET.PARAMERR,errmsg="参数不完整")
+
+    # 3.根据手机号，查询用户对象
+    try:
+        user = User.query.filter(User.mobile == mobile).first()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="用户查询失败")
+
+    # 4.判断用户是否存在
+    if not user:
+        return jsonify(errno=RET.NODATA,errmsg="该用户不存在")
+
+    # 5.判断密码是否正确
+    if user.password_hash != password:
+        return jsonify(errno=RET.DATAERR,errmsg="密码错误")
+
+    # 6.将用户的登陆信息，保存到session
+    session["user_id"] = user.id
+    session["nick_name"] = user.nick_name
+    session["mobile"] = user.mobile
+
+    # 7.返回响应
+    return jsonify(errno=RET.OK,errmsg="登陆成功")
+
+
+
+
+
+
 
 
 #功能描述: 注册用户
