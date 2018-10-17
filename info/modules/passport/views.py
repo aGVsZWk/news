@@ -73,7 +73,10 @@ def login():
         return jsonify(errno=RET.NODATA,errmsg="该用户不存在")
 
     # 5.判断密码是否正确
-    if user.password_hash != password:
+    if not user.check_passowrd(password):
+
+        # current_app.logger.error(user.check_passowrd(password))
+        # current_app.logger.error(password)
         return jsonify(errno=RET.DATAERR,errmsg="密码错误")
 
     # 6.将用户的登陆信息，保存到session
@@ -161,7 +164,8 @@ def register():
     # 8.创建用户对象，设置属性
     user = User()
     user.nick_name = mobile
-    user.password_hash = password
+    user.password = password
+
     user.mobile = mobile
 
     # 9.保存用户数据到数据库
@@ -220,14 +224,23 @@ def sms_code():
     if not re.match("1[3456789]\d{9}",mobile):
         return jsonify(errno=RET.DATAERR, errmsg="手机号格式错误")
     # 4.根据传入的图片验证码编号获取redis中的图片验证码A
-    redis_image_code = redis_store.get("image_code:%s" % image_code_id)
+    try:
+        redis_image_code = redis_store.get("image_code:%s" % image_code_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取图片验证码失败")
     # 5.判断图片验证码A,是否过期
     if not redis_image_code:
         return jsonify(errno=RET.NODATA,errmsg="图片验证码已经过期")
     # 6.删除redis中图片验证码A
-    redis_store.delete("image_code:%s" % image_code_id)
+    try:
+        redis_store.delete("image_code:%s" % image_code_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="删除图片验证码失败")
+
     # 7.判断传入的验证码B,和redis中传入的验证码是否相等
-    if image_code != redis_image_code:
+    if image_code.lower() != redis_image_code.lower():
         return jsonify(errno=RET.DATAERR,errmsg="图片验证码填写错误")
     # 8.生成短信验证码
     # sms_code = "%06d"%random.randint(0,999999)
@@ -239,7 +252,11 @@ def sms_code():
     #     return jsonify(errno=RET.DATAERR,errmsg="短信发送失败")
 
     # 10.将短信验证码保存一份到redis
-    redis_store.set("smg_code:%s"%mobile,sms_code,constants.SMS_CODE_REDIS_EXPIRES)
+    try:
+        redis_store.set("smg_code:%s"%mobile,sms_code,constants.SMS_CODE_REDIS_EXPIRES)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBEER,errmsg="短信保存异常")
     # 11.返回响应
     return jsonify(errno=RET.OK,errmsg="短信发送成功")
 

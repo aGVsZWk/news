@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from info import constants
@@ -65,8 +67,11 @@ class User(BaseModel, db.Model):
     @password.setter
     def password(self, value):
         self.password_hash = generate_password_hash(value)
+        current_app.logger.error(self.password_hash)
 
     def check_passowrd(self, password):
+        current_app.logger.error(password)
+
         return check_password_hash(self.password_hash, password)
 
     def to_dict(self):
