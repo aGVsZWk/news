@@ -15,6 +15,7 @@ from info.models import User, News, Category
 # 返回值: data数据
 @index_blu.route('/newslist')
 def news_list():
+
     """
     1.获取参数
     2.参数类型转换,为了分页 做准备,paginate(page,per_page,False)
@@ -39,8 +40,17 @@ def news_list():
 
     # 3.分页查询
     try:
-        paginate = News.query.filter(News.category_id == cid).\
-            order_by(News.create_time.desc()).paginate(page,per_page,False)
+        # paginate = News.query.filter(News.category_id == cid).\
+        #     order_by(News.create_time.desc()).paginate(page,per_page,False)
+
+        # 判断是否cid != 1，不是最新
+        condition = ""
+        if cid != "1":
+            condition = News.category_id == cid
+
+        # paginate = News.query.filter(News.category_id == cid).order_by(News.create_time.desc()).paginate(page,per_page,False)
+        paginate = News.query.filter(condition).order_by(News.create_time.desc()).paginate(page,per_page,False)
+
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR,errmsg="获取新闻失败")
@@ -48,17 +58,17 @@ def news_list():
     # 4.取出分类对象中的属性，总页数，当前页，当前页对象
     totalPage = paginate.pages
     currentPage = paginate.page
-    items = paginate.item
+    items = paginate.items
 
 
     # 5.将当前页对象列表，转成字典列表
-    newList = []
+    newsList = []
     for item in items:
-        newList.append(item.to_dict())
+        newsList.append(item.to_dict())
 
     # 6.返回响应
     return jsonify(errno=RET.OK,errmsg="获取成功",totalPage=totalPage,
-                   currentPage=currentPage,newList=newList)
+                   currentPage=currentPage,newsList=newsList)
 
 
 @index_blu.route("/")

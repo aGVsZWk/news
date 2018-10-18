@@ -25,7 +25,7 @@ app = create_app("develop")
 # 创建Manager对象，关联app
 manager = Manager(app)
 
-# 使用Migrcate，关联app,db
+# 使用Migrate，关联app,db
 Migrate(app,db)
 
 manager.add_command("db",MigrateCommand)
