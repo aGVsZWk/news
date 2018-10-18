@@ -1,3 +1,4 @@
+from datetime import datetime
 import random
 import re
 
@@ -83,6 +84,11 @@ def login():
     session["user_id"] = user.id
     session["nick_name"] = user.nick_name
     session["mobile"] = user.mobile
+
+
+    # 6.1记录用户最后一次登陆时间
+    user.last_login = datetime.now()
+
 
     # 7.返回响应
     return jsonify(errno=RET.OK,errmsg="登陆成功")

@@ -70,7 +70,7 @@ class User(BaseModel, db.Model):
 
 
     def check_passowrd(self, password):
-        current_app.logger.error(password)
+
 
         return check_password_hash(self.password_hash, password)
 
