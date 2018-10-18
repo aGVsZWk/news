@@ -44,13 +44,14 @@ def news_list():
         #     order_by(News.create_time.desc()).paginate(page,per_page,False)
 
         # 判断是否cid != 1，不是最新
-        condition = ""
+        # condition = ""
+        filters = []
         if cid != "1":
-            condition = News.category_id == cid
-
+            # condition = News.category_id == cid
+            filters.append(News.category_id == cid)
 
         # paginate = News.query.filter(News.category_id == cid).order_by(News.create_time.desc()).paginate(page,per_page,False)
-        paginate = News.query.filter(condition).order_by(News.create_time.desc()).paginate(page,per_page,False)
+        paginate = News.query.filter(*filters).order_by(News.create_time.desc()).paginate(page,per_page,False)
 
     except Exception as e:
         current_app.logger.error(e)
