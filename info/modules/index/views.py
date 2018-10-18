@@ -48,6 +48,7 @@ def news_list():
         if cid != "1":
             condition = News.category_id == cid
 
+
         # paginate = News.query.filter(News.category_id == cid).order_by(News.create_time.desc()).paginate(page,per_page,False)
         paginate = News.query.filter(condition).order_by(News.create_time.desc()).paginate(page,per_page,False)
 
