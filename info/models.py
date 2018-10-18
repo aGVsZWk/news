@@ -146,6 +146,7 @@ class News(BaseModel, db.Model):
             "digest": self.digest,
             "create_time": self.create_time.strftime("%Y-%m-%d %H:%M:%S"),
             "content": self.content,
+            #TODO 看不懂count()
             "comments_count": self.comments.count(),
             "clicks": self.clicks,
             "category": self.category.to_dict(),

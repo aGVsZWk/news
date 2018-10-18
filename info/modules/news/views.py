@@ -1,5 +1,9 @@
+from flask import abort
+from flask import current_app, jsonify
 from flask import render_template
 
+from info.models import News
+from info.utils.response_code import RET
 from . import news_blue
 
 
@@ -12,4 +16,18 @@ from . import news_blue
 @news_blue.route('/<int:news_id>')
 def news_detail(news_id):
 
-    return render_template("news/detail.html")
+    # 1.根据新闻编号获取，新闻对象
+    try:
+        news = News.query.get(news_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="新闻获取失败")
+    # 2.判断新闻对象是否存在，后续会对404做统一处理
+    if not news:
+        abort(404)
+    # 3.携带新闻数据，到模板界面那显示
+    data = {
+        "news":news.to_dict()
+    }
+
+    return render_template("news/detail.html",data=data)
