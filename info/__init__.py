@@ -60,7 +60,8 @@ def create_app(config_name):
     #将认证蓝图对象passport_blue注册到app中
     from info.modules.passport import passport_blue
     app.register_blueprint(passport_blue)
-
+    from info.modules.news import news_blue
+    app.register_blueprint(news_blue)
 
     # 将过滤器，添加到默认过滤器列表中
     app.add_template_filter(index_class,"index_class")
