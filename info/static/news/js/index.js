@@ -67,7 +67,7 @@ function updateNewsData() {
         "cid": currentCid,
         'per_page': 5
     }
-    /*
+
     $.get("/newslist", params, function (resp) {
         // 设置 `数据正在查询数据` 变量为 false，以便下次上拉加载
         house_data_querying = false
@@ -97,5 +97,5 @@ function updateNewsData() {
             }
         }
     })
-    */
+
 }

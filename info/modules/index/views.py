@@ -1,9 +1,64 @@
+from flask import request
+
 from info import redis_store
 from info.utils.response_code import RET
 from . import index_blu
 from flask import render_template,current_app, jsonify
 from flask import session
 from info.models import User, News, Category
+
+
+#功能描述: 首页新闻列表获取
+# 请求路径: /newslist
+# 请求方式: GET
+# 请求参数: cid,page,per_page
+# 返回值: data数据
+@index_blu.route('/newslist')
+def news_list():
+    """
+    1.获取参数
+    2.参数类型转换,为了分页 做准备,paginate(page,per_page,False)
+    3.分页查询
+    4.取出分页对象中的属性,总页数,当前页,当前页对象
+    5.将当前页对象列表,转成字典列表
+    6.返回响应
+    :return:
+    """
+    # 1.获取参数
+    cid = request.args.get("cid","1")
+    page = request.args.get("page","1")
+    per_page = request.args.get("per_page","10")
+
+    # 2.参数类型转换，为了分页做准备，paginate(page,per_page,False)
+    try:
+        page = int(page)
+        per_page = int(per_page)
+    except Exception as e:
+        page = 1
+        per_page = 10
+
+    # 3.分页查询
+    try:
+        paginate = News.query.filter(News.category_id == cid).\
+            order_by(News.create_time.desc()).paginate(page,per_page,False)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取新闻失败")
+
+    # 4.取出分类对象中的属性，总页数，当前页，当前页对象
+    totalPage = paginate.pages
+    currentPage = paginate.page
+    items = paginate.item
+
+
+    # 5.将当前页对象列表，转成字典列表
+    newList = []
+    for item in items:
+        newList.append(item.to_dict())
+
+    # 6.返回响应
+    return jsonify(errno=RET.OK,errmsg="获取成功",totalPage=totalPage,
+                   currentPage=currentPage,newList=newList)
 
 
 @index_blu.route("/")
