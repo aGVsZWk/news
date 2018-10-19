@@ -53,12 +53,18 @@ def news_detail(news_id):
     #     except Exception as e:
     #         current_app.logger.error(e)
 
+    # 2.3 判断用户是否收藏了该新闻
+    is_collected = False
+    if g.user and news in g.user.collection_news:
+        is_collected = True
+
 
     # 3.携带新闻数据，到模板界面那显示
     data = {
         "news":news.to_dict(),
         "click_news_list":click_news_list,
-        "user_info":g.user.to_dict() if g.user else ""
+        "user_info":g.user.to_dict() if g.user else "",
+        "is_collected":is_collected
     }
 
 
