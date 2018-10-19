@@ -38,7 +38,7 @@
     <a href="javascript:;" class="collected block-center" data-newid="{{ data.news.id }}" style="display: {% if data.is_collected %}block{% else %}none{% endif %};"><span class="out">已收藏</span><span class="over">取消收藏</span></a>
 
 
-    {#    判断是否显示评论输入框#}
+{#        判断是否显示评论输入框#}
     {% if data.user_info %}
     <form action="" class="comment_form" data-newsid="{{ data.news.id }}">
         <div class="person_pic">
@@ -63,7 +63,7 @@
         {% for comment in data.comments %}
             <div class="comment_list">
             <div class="person_pic fl">
-                {# 判断用户是否有用户头像 #}
+{#                 判断用户是否有用户头像 #}
                 {% if comment.user.avatar_url %}
                     <img src="{{ comment.user.avatar_url }}" alt="用户图标">
                 {% else %}
@@ -74,12 +74,12 @@
             <div class="comment_text fl">
                 {{ comment.content }}
             </div>
-            {# 判断是否有父评论 #}
+{#             判断是否有父评论 #}
             {% if comment.parent %}
                 <div class="reply_text_con fl">
-                <div class="user_name2">用户李思</div>
+                <div class="user_name2">{{ comment.parent.user.nick_name }}</div>
                 <div class="reply_text">
-                    遏制茅台酒价格过快上涨，多渠道供给，就不一定要买，租茅台酒也可以的，租售同权。开发共有产权茅台酒，让老百姓喝得起茅台酒，饮者有其酒。
+                    {{ comment.parent.content }}
                 </div>
             </div>
             {% endif %}
@@ -87,7 +87,7 @@
             <div class="comment_time fl">{{ comment.create_time }}</div>
             <a href="javascript:;" class="comment_up has_comment_up fr">1</a>
             <a href="javascript:;" class="comment_reply fr">回复</a>
-            <from class="reply_form fl" data-newsid="" data-commentid="">
+            <from class="reply_form fl" data-newsid="{{ comment.news_id }}" data-commentid="{{ comment.id }}">
                 <textarea  class="reply_input"></textarea>
                 <input type="submit" name="" value="回复" class="reply_sub fr">
                 <input type="reset" name="" value="取消" class="reply_cancel fr">
@@ -122,7 +122,7 @@
 {#    <a href="javascript:;" class="collected block-center" data-newid="{{ data.news.id }}" style="display: {% if data.is_collected %}block{% else %}none{% endif %};"><span class="out">已收藏</span><span class="over">取消收藏</span></a>#}
 {##}
 {##}
-    {#    判断是否显示评论输入框#}
+{#        判断是否显示评论输入框#}
 {#    {% if data.user_info %}#}
 {#    <form action="" class="comment_form">#}
 {#        <div class="person_pic">#}

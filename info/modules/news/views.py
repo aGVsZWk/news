@@ -73,6 +73,9 @@ def news_comment():
         return jsonify(errno=RET.DBERR,errmsg="评论失败")
 
     # 8.返回响应
+    te = comment.to_dict()
+    print(te)
+    print(te.comments)
     return jsonify(errno=RET.OK,errmsg="评论成功",data=comment.to_dict())
 
 
@@ -194,13 +197,25 @@ def news_detail(news_id):
     if g.user and news in g.user.collection_news:
         is_collected = True
 
+    # 2.4 获取该新闻的所有评论数据
+    try:
+        comments = Comment.query.filter(Comment.news_id == news.id).order_by(Comment.create_time.desc()).all()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取评论失败")
+
+    # 2.5 将评论的对象列表，转成字典列表
+    comment_list = []
+    for comment in comments:
+        comment_list.append(comment.to_dict())
 
     # 3.携带新闻数据，到模板界面那显示
     data = {
         "news":news.to_dict(),
         "click_news_list":click_news_list,
         "user_info":g.user.to_dict() if g.user else "",
-        "is_collected":is_collected
+        "is_collected":is_collected,
+        "comments":comment_list
     }
 
 
