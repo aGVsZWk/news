@@ -1,6 +1,8 @@
 # 定义公共代码，过滤器
 
 # 自定义过滤器，实现颜色过滤
+from functools import wraps
+
 from flask import current_app
 from flask import g,session
 
@@ -20,6 +22,7 @@ def index_class(index):
 # 用户登陆的装饰器
 
 def user_login_data(view_func):
+    @wraps(view_func)
     def wrapper(*args,**kwargs):
 
         # 取出session，用户编号
