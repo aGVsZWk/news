@@ -73,7 +73,7 @@ def news_comment():
         return jsonify(errno=RET.DBERR,errmsg="评论失败")
 
     # 8.返回响应
-    return jsonify(errno=RET.OK,errmsg="评论成功")
+    return jsonify(errno=RET.OK,errmsg="评论成功",data=comment.to_dict())
 
 
 
