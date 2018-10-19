@@ -59,29 +59,37 @@ def comment_like():
         return jsonify(errno=RET.NODATA,errmsg="评论不存在")
 
     # 7.根据操作类型，点赞，取消点赞
-    if action == "add":
-        # 判断用户是否点过赞
-        comment_like = CommentLike.query.filter(CommentLike.user_id == g.user.id,CommentLike.comment_id==comment_id).first()
-        if not comment_like:
-            # 创建点赞对象
-            comment_like = CommentLike()
-            comment_like.user_id = g.user.id
-            comment_like.comment_id = comment_id
+    try:
+        if action == "add":
+            # 判断用户是否点过赞
+            comment_like = CommentLike.query.filter(CommentLike.user_id == g.user.id,CommentLike.comment_id==comment_id).first()
+            if not comment_like:
+                # 创建点赞对象
+                comment_like = CommentLike()
+                comment_like.user_id = g.user.id
+                comment_like.comment_id = comment_id
 
-            # 保存点赞对象到数据库
-            db.session.add(comment_like)
-            db.session.commit()
+                # 保存点赞对象到数据库
+                db.session.add(comment_like)
+                db.session.commit()
 
-            # 点赞数量+1
-            comment.like_count += 1
-    else:
-        # 判断用户是否点过赞
-        comment_like = CommentLike.query.filter(CommentLike.user_id == g.user.id,CommentLike.comment_id==comment_id).first()
-        if comment_like:
-            # 移除点赞对象
-            db.session.delete(comment_like)
-            db.session.rollback()
-            return jsonify(errno=RET.DBERR,errmsg="操作失败")
+                # 点赞数量+1
+                comment.like_count += 1
+        else:
+            # 判断用户是否点过赞
+            comment_like = CommentLike.query.filter(CommentLike.user_id == g.user.id,CommentLike.comment_id==comment_id).first()
+            if comment_like:
+                # 移除点赞对象
+                db.session.delete(comment_like)
+                db.session.commit()
+
+                # 点赞数量-1
+                if comment.like_count > 0:
+                    comment.like_count -= 1
+    except Exception as e:
+        current_app.logger.error(e)
+        db.session.rollback()
+        return jsonify(errno=RET.DBERR,errmsg="操作失败")
 
     # 8.返回响应
     return jsonify(errno=RET.OK,errmsg="操作成功")
