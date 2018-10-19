@@ -1,8 +1,9 @@
 from flask import abort
 from flask import current_app, jsonify
 from flask import render_template
+from flask import session
 
-from info.models import News
+from info.models import News, User
 from info.utils.response_code import RET
 from . import news_blue
 
@@ -38,13 +39,23 @@ def news_detail(news_id):
     for news in news_list:
         click_news_list.append(news.to_dict())
 
+    # 2.3取出session中的用户编号
+    user_id = session.get("user_id")
 
+    # 2.4 获取用户对象
+    user = None
+    if user_id:
+        try:
+            user = User.query.get(user_id)
+        except Exception as e:
+            current_app.logger.error(e)
 
 
     # 3.携带新闻数据，到模板界面那显示
     data = {
         "news":news.to_dict(),
-        "click_news_list":click_news_list
+        "click_news_list":click_news_list,
+        "user_info":user.to_dict() if user else ""
     }
 
 
