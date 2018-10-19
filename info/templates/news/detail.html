@@ -86,7 +86,10 @@
 
             <div class="comment_time fl">{{ comment.create_time }}</div>
             {#点赞处理#}
-            <a href="javascript:;" class="comment_up {% if comment.is_like %}has_comment_up{% endif %} fr">1</a>
+            <a href="javascript:;" class="comment_up {% if comment.is_like %}has_comment_up{% endif %} fr"
+            data-commentid="{{ comment.id }}">
+                1
+            </a>
             <a href="javascript:;" class="comment_reply fr">回复</a>
             <from class="reply_form fl" data-newsid="{{ comment.news_id }}" data-commentid="{{ comment.id }}">
                 <textarea  class="reply_input"></textarea>
