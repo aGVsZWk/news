@@ -38,10 +38,8 @@
     <a href="javascript:;" class="collected block-center" data-newid="" style="display: none"><span class="out">已收藏</span><span class="over">取消收藏</span></a>
 
 
-    <div class="comment_form_logout">
-        登录发表你的评论
-    </div>
-
+    {#    判断是否显示评论输入框#}
+    {% if data.user_info %}
     <form action="" class="comment_form">
         <div class="person_pic">
             <img src="../../static/news/images/cat.jpg" alt="用户图标">
@@ -49,6 +47,12 @@
         <textarea placeholder="请发表您的评论" class="comment_input"></textarea>
         <input type="submit" name="" value="评 论" class="comment_sub">
     </form>
+    {% else %}
+     <div class="comment_form_logout">
+        登录发表你的评论
+     </div>
+    {% endif %}
+
 
 
     <div class="comment_count">

@@ -39,8 +39,8 @@ def news_detail(news_id):
     # 2.2 将新闻列表对象，转换成字典列表对象
 
     click_news_list = []
-    for news in news_list:
-        click_news_list.append(news.to_dict())
+    for click_news in news_list:
+        click_news_list.append(click_news.to_dict())
 
     # # 2.3取出session中的用户编号
     # user_id = session.get("user_id")
