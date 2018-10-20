@@ -283,7 +283,16 @@ def news_detail(news_id):
         return jsonify(errno=RET.DBERR,errmsg="获取评论失败")
 
     # 用户所有点过赞对象列表
-    comment_likes = g.user.comment_likes
+    # comment_likes = g.user.comment_likes
+
+    comment_likes = []
+    try:
+        if g.user:
+            comment_likes = g.user.comment_likes
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取点赞数据失败")
+
 
     # 取出，所有点赞对象的评论编号
     comment_ids = []
