@@ -28,7 +28,7 @@ $(function () {
             "nick_name": nick_name,
             "gender": gender
         }
-        /*
+
         $.ajax({
             url: "/user/base_info",
             type: "post",
@@ -43,11 +43,12 @@ $(function () {
                     $('.user_center_name', parent.document).html(params['nick_name'])
                     $('#nick_name', parent.document).html(params['nick_name'])
                     $('.input_sub').blur()
+                    alert("修改成功")
                 }else {
                     alert(resp.errmsg)
                 }
             }
         })
-        */
+
     })
 })

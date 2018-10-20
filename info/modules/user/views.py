@@ -1,7 +1,8 @@
-from flask import g,redirect,render_template
+from flask import g,redirect,render_template, jsonify
 from flask import request
 
 from info.utils.commons import user_login_data
+from info.utils.response_code import RET
 from . import user_blue
 
 # 功能描述：展示基本资料信息
@@ -16,8 +17,26 @@ def base_info():
     if request.method == "GET":
         return render_template("news/user_base_info.html",user=g.user.to_dict())
     # 2.如果是POST请求，获取参数
-    pass
+    # 2.1 获取参数
+    nick_name = request.json.get("nick_name")
+    signature = request.json.get("signature")
+    gender = request.json.get("gender")
 
+    # 2.2 校验参数，为空校验
+    if not all([nick_name,signature,gender]):
+        return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
+
+    # 2.3 性别类型校验
+    if gender not in ["MAN","WOMAN"]:
+        return jsonify(errno=RET.DATAERR,errmsg="性别异常")
+
+    # 2.4 修改用户信息
+    g.user.signature = signature
+    g.user.nick_name = nick_name
+    g.user.gender = gender
+
+    # 2.5 返回响应
+    return jsonify(errno=RET.OK,errmsg="修改成功")
 
 
 
