@@ -10,6 +10,60 @@ from info.utils.response_code import RET
 from . import user_blue
 
 
+# 功能描述：获取新闻发布列表
+#　请求路径：/user/news_list
+# 请求方式：GET
+# 请求参数：p
+# 返回值：GET渲染user_news_list.html页面
+@user_blue.route('/news_list')
+@user_login_data
+def news_list():
+    """
+    1.获取参数
+    2.参数类型转换
+    3.分页查询
+    4.获取分页对象属性，总页数，当前页，当前页对象列表
+    5.对象列表转成字典
+    6.携带数据渲染页面
+    :return:
+    """
+    # 1.获取参数
+    page = request.args.get("p","1")
+
+    # 2.参数类型转换
+    try:
+        page = int(page)
+    except Exception as e:
+        current_app.logger(e)
+        return jsonify(errno=RET.DBER,errmsg="获取新闻列表失败")
+
+    # 3.分页查询
+    try:
+        paginate = News.query.filter(News.user_id == g.user.id).order_by(News.create_time.desc()).paginate(page,3,False)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取新闻列表失败")
+
+    # 4.获取分页对象属性，总页数，当前页，当前页对象列表
+    totalPage = paginate.pages
+    currentPage = paginate.page
+    items = paginate.items
+
+    # 5.对象列表转成字典
+    news_list = []
+    for news in items:
+        news_list.append(news.to_review_dict())
+
+    # 6.携带数据渲染页面
+    data = {
+        "totalPage":totalPage,
+        "currentPage":currentPage,
+        "news_list":news_list
+    }
+    return render_template("news/user_news_list.html",data=data)
+
+
+
 # 功能描述：新闻发布
 # 请求路径：/user/news_release
 # 请求方式：GET,POST
