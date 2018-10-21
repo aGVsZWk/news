@@ -10,7 +10,7 @@ $(function () {
 
         //TODO 上传头像
         // 上传头像,表单提交和其他提交方式不一样
-        /*
+
         $(this).ajaxSubmit({
             url: "/user/pic_info",
             type: "POST",
@@ -27,6 +27,6 @@ $(function () {
                 }
             }
         })
-        */
+
     })
 })
