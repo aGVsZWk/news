@@ -25,7 +25,7 @@
                     <div class="writings"><span>总篇数</span><b>{{ author.news_count }}</b></div>
                     <div class="follows"><span>粉丝</span><b>{{ author.followers_count }}</b></div>
 {#                    <a href="javascript:;" class="focus fr">关注</a>#}
-                    <a href="javascript:;" class="focused fr"><span class="out">已关注</span><span class="over">取消关注</span></a>
+                    <a href="javascript:;" class="focused fr" data-userid="{{ author.id }}"><span class="out">已关注</span><span class="over">取消关注</span></a>
                 </li>
             {% endfor %}
         </ul>

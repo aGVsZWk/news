@@ -13,7 +13,7 @@ $(function () {
             "action": "unfollow",
             "user_id": user_id
         }
-        /*
+
         $.ajax({
             url: "/news/followed_user",
             type: "post",
@@ -40,7 +40,7 @@ $(function () {
                 }
             }
         })
-        */
+
 
     })
 })
