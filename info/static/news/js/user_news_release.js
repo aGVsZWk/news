@@ -10,7 +10,7 @@ $(function () {
         e.preventDefault()
 
         // 发布新闻, ajaxSubmit属于表单提交
-        /*
+
         $(this).ajaxSubmit({
             //是为了处理富文本(可以有颜色,大小)
             beforeSubmit: function (request) {
@@ -38,6 +38,6 @@ $(function () {
                 }
             }
         })
-        */
+
     })
 })

@@ -25,7 +25,7 @@ def user_login_data(view_func):
     @wraps(view_func)
     def wrapper(*args,**kwargs):
 
-        # 取出session，用户编号
+        # 取出session，用户编
         user_id = session.get("user_id")
 
         # 获取用户对象
@@ -35,7 +35,7 @@ def user_login_data(view_func):
                 from info.models import User
                 user = User.query.get(user_id)
             except Exception as e:
-                current_app.loggger(e)
+                current_app.logger(e)
 
         # 将user添加到g对象中
         g.user = user
