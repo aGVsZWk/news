@@ -65,9 +65,19 @@ def create_app(config_name):
     # 将新闻蓝图对象news_blue注册到app中
     from info.modules.news import news_blue
     app.register_blueprint(news_blue)
+
     # 将用户蓝图对象user_blue注册到app中
     from info.modules.user import user_blue
     app.register_blueprint(user_blue)
+
+    # 将管理员蓝图对象admin_blue注册到app中
+    from info.modules.admin import admin_blue
+    app.register_blueprint(admin_blue)
+
+
+    # 将过滤器，添加到默认过滤器列表中
+    app.add_template_filter(index_class,"index_class")
+
 
     # 捕获404错误信息
     @app.errorhandler(404)
@@ -77,10 +87,6 @@ def create_app(config_name):
         return render_template("news/404.html",data=data)
 
 
-
-
-    # 将过滤器，添加到默认过滤器列表中
-    app.add_template_filter(index_class,"index_class")
 
     # 使用请求钩子，after_request拦截所有响应
     @app.after_request
