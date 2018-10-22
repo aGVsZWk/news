@@ -14,8 +14,15 @@
 		<h1 class="login_title">用户登录</h1>
 		<input type="text" name="username" placeholder="用户名" class="input_txt">
 		<input type="password" name="password" placeholder="密码" class="input_txt">
-		<div class="error_tip">错误提示</div>
-		<input type="submit" value="登 录" class="input_sub">
+
+        {% if errmsg %}
+            <div class="error_tip" style="display:block;">错误提示: {{ errmsg }}</div>
+        {% endif %}
+
+        <input type="submit" value="登 录" class="input_sub">
+        {# 只要使用CSRFProtect保护应用程序，并且是要用模板渲染页面，可以使用csrf_token() #}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" class="input_sub">
+
 	</form>
 	<div class="login_bg"></div>
 </body>
