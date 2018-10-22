@@ -1,14 +1,32 @@
 from flask import current_app
+from flask import g
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import session
 
 from info.models import User
+from info.utils.commons import user_login_data
 from . import admin_blue
+# 显示管理员首页界面
+# 请求路径：/admin/index
+#　请求方式： GET
+# 请求参数：无
+#　返回值：渲染界面index.html,user字典数据
+@admin_blue.route('/index')
+@user_login_data
+def admin_index():
+    admin = g.user.to_dict()
+    return render_template("admin/index.html",admin=admin)
+
+
+
+
+
 
 # 显示登陆页面
 @admin_blue.route("/login",methods=["GET","POST"])
+
 def admin_login():
     """
     1.判断请求方式，如果是GET请求，直接返回登陆页面
@@ -23,6 +41,11 @@ def admin_login():
 
     # 1.判断请求方式，如果是GET请求，直接返回登陆页面
     if request.method == "GET":
+
+        # 判断管理员是否，已经登陆过
+        if session.get("is_admin"):
+            return  redirect("/admin/index")
+
         return render_template("admin/login.html")
 
     # 2.如果是POST,获取参数
@@ -54,5 +77,5 @@ def admin_login():
     session["is_admin"] = admin.is_admin
 
     # 7.重定向到首页
-    return redirect("http://www.baidu.com")
+    return redirect("/admin/index")
 
