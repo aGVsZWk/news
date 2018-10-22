@@ -3,11 +3,56 @@ from flask import g,redirect,render_template, jsonify
 from flask import request
 
 from info import constants, db
-from info.models import Category, News
+from info.models import Category, News, User
 from info.utils.commons import user_login_data
 from info.utils.image_storage import image_storage
 from info.utils.response_code import RET
 from . import user_blue
+
+
+# 功能描述：作者页面信息展示
+# 请求路径：/user/other
+# 请求方式：GET
+# 请求参数：id
+# 返回值：渲染other.html页面，字典data数据
+@user_blue.route('/other')
+@user_login_data
+def other_info():
+    """
+    1.获取参数
+    2.校验参数，非空
+    3.通过编号查询，并判断作者是否存在
+    4.携带作者信息，渲染页面
+    :return:
+    """
+    # 1.获取参数
+    author_id = request.args.get("id")
+
+    # 2.校验参数，非空
+    if not author_id:
+        return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
+
+    # 3.通过编号查询，并判断作者是否存在
+    try:
+        author = User.query.get(author_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="用户查询失败")
+    # 3.1 判断当前登陆用户是否有关注过该作者
+    is_followed = False
+    if g.user:
+        if g.user in author.followers:
+            is_followed = True
+
+    # 4.携带作者信息，渲染页面
+    data = {
+        "author":author.to_dict(),
+        "user_info":g.user.to_dict() if g.user else "",
+        "is_followed":is_followed
+    }
+    return render_template("news/other.html",data=data)
+
+
 
 
 # 功能描述：获取我的关注

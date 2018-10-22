@@ -25,7 +25,7 @@
         <h3>{{ data.news.title }}</h3>
         <div class="detail_about clearfix">
             <span class="time_souce fl">{{ data.news.create_time }} 来源: {{ data.news.source }}</span>
-            <span class="comment fr">3{{ data.news.comments_count }}</span>
+            <span class="comment fr">评论数: {{ data.news.comments_count }}</span>
         </div>
 
         <p class="summary">
@@ -117,7 +117,8 @@
             {% else %}
                 <a href="#" class="author_pic"><img src="../../static/news/images/user_pic.png" alt="author_pic"></a>
             {% endif %}
-            <a href="#" class="author_name">{{ data.news.author.nick_name }}</a>
+{#            <a href="/news/other.html" class="author_name">{{ data.news.author.nick_name }}</a>#}
+            <a href="/user/other?id={{ data.news.author.id }}" class="author_name">{{ data.news.author.nick_name }}</a>
             <div class="author_resume">{{ data.news.author.signature }}</div>
             <div class="writings"><span>总篇数</span><b>{{ data.news.author.news_count }}</b></div>
             <div class="follows"><span>粉丝</span><b>{{ data.news.author.followers_count }}</b></div>
