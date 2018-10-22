@@ -10,6 +10,74 @@ from info.utils.response_code import RET
 from . import user_blue
 
 
+# 功能描述：获取作者新闻列表
+# 请求路径：/user/other_news_list
+# 请求方式：GET
+# 请求参数：p,user_id
+# 返回值：errno,errmsg
+@user_blue.route('/other_news_list')
+def other_news_list():
+    """
+    1.获取参数
+    2.校验参数，作者编号
+    3.参数类型转换
+    4.分页查询
+    5.获取分页对象属性，总页数，当前页，当前页对象列表
+    6.对象列表转换成字典列表
+    7.携带数据，返回响应
+    :return:
+    """
+    # 1.获取参数
+    author_id = request.args.get("user_id")
+    page = request.args.get("p","1")
+
+    # 2.校验参数，作者编号
+    if not author_id:
+        return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
+
+    # 3.参数类型转换
+    try:
+        page = int(page)
+    except Exception as e:
+        page = 1
+
+    # 3.1根据编号取出作者对象，判断作者对象是否存在
+    try:
+        author = User.query.get(author_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取用户失败")
+
+    if not author: return jsonify(errno=RET.NODATA,errmsg="作者不存在")
+
+    # 4.分页查询
+    try:
+        paginate = author.news_list.order_by(News.create_time.desc()).paginate(page,3,False)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取新闻列表失败")
+
+    # 5.获取分页对象属性，总页数，当前页，当前页对象列表
+    total_page = paginate.pages
+    current_page = paginate.page
+    items = paginate.items
+
+    # 6.对象列表转换成字典列表
+    news_list = []
+    for news in items:
+        news_list.append(news.to_dict())
+
+    # 7.携带数据，返回响应
+    data = {
+        "total_page":total_page,
+        "current_page":current_page,
+        "news_list":news_list
+    }
+    return jsonify(errno=RET.OK,errmsg="获取成功",data=data)
+
+
+
+
 # 功能描述：作者页面信息展示
 # 请求路径：/user/other
 # 请求方式：GET

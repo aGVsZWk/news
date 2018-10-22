@@ -19,7 +19,7 @@ $(function(){
             "action": "follow",
             "user_id": user_id
         }
-        /*
+
         $.ajax({
             url: "/news/followed_user",
             type: "post",
@@ -45,7 +45,7 @@ $(function(){
                 }
             }
         })
-        */
+
     })
 
     // TODO 取消关注当前作者
@@ -55,7 +55,7 @@ $(function(){
             "action": "unfollow",
             "user_id": user_id
         }
-        /*
+
         $.ajax({
             url: "/news/followed_user",
             type: "post",
@@ -81,7 +81,7 @@ $(function(){
                 }
             }
         })
-        */
+
     })
 })
 
@@ -93,7 +93,7 @@ function getNewsList(page) {
         "p": page,
         "user_id": query["id"]
     }
-    /*
+
     $.get("/user/other_news_list", params, function (resp) {
         if (resp.errno == "0") {
             // 先清空原有的数据
@@ -111,5 +111,5 @@ function getNewsList(page) {
             alert(resp.errmsg)
         }
     })
-    */
+
 }
