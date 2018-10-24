@@ -7,7 +7,7 @@ $(function(){
     $(".news_edit").submit(function (e) {
         e.preventDefault()
         // 如果是ajaxsubmit是表单提交
-        /*
+
         $(this).ajaxSubmit({
             beforeSubmit: function (request) {
                 // 在提交之前，对参数进行处理
@@ -32,7 +32,7 @@ $(function(){
                 }
             }
         })
-        */
+
     })
 })
 
