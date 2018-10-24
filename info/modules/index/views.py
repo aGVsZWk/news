@@ -47,7 +47,7 @@ def news_list():
 
         # 判断是否cid != 1，不是最新
         # condition = ""
-        filters = []
+        filters = [News.status == 0]
         if cid != "1":
             # condition = News.category_id == cid
             filters.append(News.category_id == cid)

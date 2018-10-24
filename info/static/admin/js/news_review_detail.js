@@ -24,7 +24,7 @@ $(function(){
             "news_id": news_id,
             "reason": reason
         }
-        /*
+
         $.ajax({
             url: "/admin/news_review_detail",
             type: "post",
@@ -42,7 +42,7 @@ $(function(){
                 }
             }
         })
-        */
+
     })
 })
 

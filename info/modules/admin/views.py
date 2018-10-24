@@ -13,6 +13,78 @@ from info.utils.response_code import RET
 from . import admin_blue
 
 
+# 功能描述：新闻审核详情
+# 请求路径：/admin/news_review_detail
+# 请求方式：GET，POST
+# 请求参数：GET,news_id,POST,news_id,action
+# 返回值：GET，渲染news_review_detail.html页面，data字典数据
+@admin_blue.route('/news_review_detail', methods=['GET', 'POST'])
+def news_review_detail():
+    """
+    1.判断请求方式，如果是GET
+    1.1获取参数
+    1.2校验参数
+    1.3取出新闻对象，判断新闻对象是否存在
+    1.4携带新闻数据，渲染页面
+    2.获取参数
+    3.校验参数，为空校验
+    4.校验操作类型
+    5.根据新闻编号，查询新闻对象
+    6.判断新闻对象是否存在
+    7.根据操作类型，改变新闻的状态
+    8.返回响应
+    :return:
+    """
+    # 1.判断请求方式，如果是GET
+    if request.method == "GET":
+        # 1.1获取参数
+        news_id = request.args.get("news_id")
+
+    # 1.2校验参数
+        if not news_id:return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
+
+    # 1.3取出新闻对象，判断新闻对象是否存在
+        try:
+            news = News.query.get(news_id)
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR,errmsg="获取新闻不存在")
+        if not news:return jsonify(errno=RET.NODATA,errmsg="新闻不存在")
+
+        # 1.4携带新闻数据，渲染页面
+        return render_template("admin/news_review_detail.html",news=news.to_dict())
+    # 2.获取参数
+    news_id = request.json.get("news_id")
+    action = request.json.get("action")
+
+    # 3.校验参数，为空校验
+    if not all([news_id,action]):
+        return jsonify(errno=RET.DATAERR,errmsg="操作类型有误")
+
+    # 4.校验操作类型
+    if not action in ["accept","reject"]:
+        return jsonify(errno=RET.DATAERR,errmsg="操作类型有误")
+
+    # 5.根据新闻编号，查询新闻对象
+    try:
+        news = News.query.get(news_id)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取新闻失败")
+
+    # 6.判断新闻对象是否存在
+    if not news:return jsonify(errno=RET.NODATA,errmsg="新闻不存在")
+
+    # 7.根据操作类型，改变新闻的状态
+    if action == "accept":
+        news.status = 0
+    else:
+        reason = request.json.get("reason","")
+        news.reason = reason
+        news.status = -1
+    # 8.返回响应
+    return jsonify(errno=RET.OK,errmsg="审核成功")
+
 # 功能：新闻审核列表
 # 请求路径：/admin/news_review
 # 请求方式：GET
