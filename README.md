@@ -1,2 +1,2 @@
-# dogwangwangwang
-很好的项目
+# 新闻类项目
+## 基于flask, 前后端不分离
