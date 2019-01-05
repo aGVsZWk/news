@@ -447,7 +447,7 @@ def user_count():
 @admin_blue.route('/index')
 @user_login_data
 def admin_index():
-    admin = g.user.to_dict()
+    admin = g.user.to_dict() if g.user else ""
     return render_template("admin/index.html",admin=admin)
 
 

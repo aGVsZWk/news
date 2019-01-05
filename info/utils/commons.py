@@ -25,7 +25,7 @@ def user_login_data(view_func):
     @wraps(view_func)
     def wrapper(*args,**kwargs):
 
-        # 取出session，用户编
+        # 取出session，用户编号
         user_id = session.get("user_id")
 
         # 获取用户对象

@@ -13,7 +13,7 @@ class Config(object):
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True # 当链接关闭的时候，会自动提交
 
     # Redis配置
-    REIDS_HOST = "127.0.0.1"
+    REIDS_HOST = "192.168.188.134"
     REDIS_PORT = 6379
 
     #session配置

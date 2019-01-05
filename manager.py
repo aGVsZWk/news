@@ -49,7 +49,7 @@ def create_superuser(username,password):
     # 3.保存管理员到数据库
     try:
         db.session.add(admin)
-        # db.session.commit()
+        db.session.commit()
     except Exception as e:
         return "注册失败"
 
