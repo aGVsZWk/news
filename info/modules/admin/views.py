@@ -7,12 +7,61 @@ from flask import render_template
 from flask import request
 from flask import session
 
+from info import db
 from info.models import User, News, Category
 from info.utils.commons import user_login_data
 from info.utils.image_storage import image_storage
 from info.utils.response_code import RET
 from . import admin_blue
 
+
+# 功能描述: 新增&编辑分类
+# 请求路径: /admin/add_category
+# 请求方式: POST
+# 请求参数: id,name
+# 返回值:errno,errmsg
+@admin_blue.route('/add_category', methods=['POST'])
+def add_category():
+    #1.获取参数
+    c_id = request.json.get("id")
+    c_name = request.json.get("name")
+
+    #2.校验参数,为空校验
+    if not c_name:
+        return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
+
+    #3.根据是否有id, 判断是增加,还是编辑
+    if c_id:# 编辑
+
+        #3.1通过编号,取出分类对象
+        try:
+            category = Category.query.get(c_id)
+        except Exception as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.DBERR,errmsg="获取分类失败")
+
+        #3.2判断分类对象是否存在
+        if not category: return jsonify(errno=RET.NODATA,errmsg="分类不存在")
+
+        #3.3修改分类名称
+        category.name = c_name
+
+    else: #新增
+        #3.4创建分类对象,设置属性
+        category = Category()
+        category.name = c_name
+
+        #3.5保存到数据库
+        try:
+            db.session.add(category)
+            db.session.commit()
+        except Exception as e:
+            current_app.logger.error(e)
+            db.session.rollback()
+            return jsonify(errno=RET.DBERR,errmsg="添加分类失败")
+
+    #4.返回响应
+    return jsonify(errno=RET.OK,errmsg="操作成功")
 
 #功能描述: 获取分类列表
 # 请求路径: /admin/news_category
