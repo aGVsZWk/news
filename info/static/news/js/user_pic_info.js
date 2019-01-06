@@ -22,11 +22,11 @@ $(function () {
                     $(".now_user_pic").attr("src", resp.data.avatar_url)
                     $(".user_center_pic>img", parent.document).attr("src", resp.data.avatar_url)
                     $(".user_login>img", parent.document).attr("src", resp.data.avatar_url)
+                    alert("上传成功")
                 }else {
                     alert(resp.errmsg)
                 }
             }
         })
-
     })
 })
