@@ -139,7 +139,7 @@ def news_edit_detail():
     digest = request.form.get("digest")
     content = request.form.get("content")
     # 不知道为啥，收不到图片
-    index_image = request.form.get("index_image")
+    index_image = request.files.get("index_image")
     category_id = request.form.get("category_id")
 
     # 3.校验参数，为空校验
