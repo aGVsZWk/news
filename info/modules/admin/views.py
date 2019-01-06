@@ -14,6 +14,25 @@ from info.utils.response_code import RET
 from . import admin_blue
 
 
+#功能描述: 获取分类列表
+# 请求路径: /admin/news_category
+# 请求方式: GET
+# 请求参数: GET,无
+# 返回值:GET,渲染news_type.html页面, data数据
+@admin_blue.route('/news_category')
+def news_category():
+    #1.查询所有分类
+    try:
+        categories = Category.query.all()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取分类失败")
+
+    #2.携带分类数据渲染页面
+    return render_template("admin/news_type.html",categories=categories)
+
+
+
 # 功能描述；新闻编辑详情
 # 请求路径：/admin/news_edit_detail
 # 请求方式：GET，POST
