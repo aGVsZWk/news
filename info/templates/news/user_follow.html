@@ -16,7 +16,7 @@
             {% for author in data.author_list %}
                 <li class="author_card card_list">
                     {% if author.avatar_url %}
-                        <a href="#" target="_blank" class="author_pic"><img src="{{ author.avatar.url }}" alt="author_pic"></a>
+                        <a href="#" target="_blank" class="author_pic"><img src="{{ author.avatar_url }}" alt="author_pic"></a>
                     {% else %}
                         <a href="#" target="_blank" class="author_pic"><img src="../../static/news/images/cat.jpg" alt="author_pic"></a>
                     {% endif %}

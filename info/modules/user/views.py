@@ -152,7 +152,7 @@ def user_follow():
 
     # 3.分页查询
     try:
-        paginate = g.user.followed.paginate(page,2,False)
+        paginate = g.user.followed.paginate(page,4,False)
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR,errmsg="获取新闻列表失败")
@@ -274,20 +274,25 @@ def news_release():
     content = request.form.get("content")
 
     # 3.校验参数，为空校验
-    if not all([title,category_id,digest,content]):
+    if not all([title,category_id,digest,content,index_image]):
         return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
     # # 上传图片
-        pass
+    try:
+        image_name = image_storage(index_image.read())
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.THIRDERR, errmsg="七牛云上传异常")
 
     # 4.判断图片是否上传成功
-        pass
+    if not image_name:
+        return jsonify(errno=RET.NODATA,errmsg="上传失败")
+
     # 5.创建新闻属性，设置新闻属性
     news = News()
     news.title = title
     news.source = g.user.nick_name
     news.digest = digest
-    # news.index_image_url = constants.QINIU_DOMIN_PREFIX + index_image
-    news.index_image_url = "没有图片"
+    news.index_image_url = constants.QINIU_DOMIN_PREFIX + image_name
     news.content = content
     news.category_id = category_id
     news.user_id = g.user.id
@@ -306,6 +311,56 @@ def news_release():
 
 
 
+# 功能描述: 获取用户收藏新闻
+# 请求路径: /user/ collection
+# 请求方式:GET
+# 请求参数:p(页数)
+# 返回值: user_collection.html页面,携带新闻数据data
+@user_blue.route('/collection')
+@user_login_data
+def collection():
+    """
+    - 1.获取参数,页数
+    - 2.参数类型转换
+    - 3.分页查询,获取到分页对象
+    - 4.获取分页对象属性,总页数,当前页,当前页对象列表
+    - 5.对象列表转成字典列表
+    - 6.拼接数据渲染页面
+    :return: m
+    """
+    # - 1.获取参数,页数
+    page = request.args.get("p","1")
+
+    # - 2.参数类型转换
+    try:
+        page = int(page)
+    except Exception as e:
+        page = 1
+
+    # - 3.分页查询,获取到分页对象
+    try:
+        paginate = g.user.collection_news.order_by(News.create_time.desc()).paginate(page,10,False)
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR,errmsg="获取新闻失败")
+
+    # - 4.获取分页对象属性,总页数,当前页,当前页对象列表
+    totalPage = paginate.pages
+    currentPage = paginate.page
+    items = paginate.items
+
+    # - 5.对象列表转成字典列表
+    news_list = []
+    for news in items:
+        news_list.append(news.to_dict())
+
+    # - 6.拼接数据渲染页面
+    data = {
+        "totalPage":totalPage,
+        "currentPage":currentPage,
+        "news_list":news_list
+    }
+    return render_template("news/user_collection.html",data=data)
 
 
 

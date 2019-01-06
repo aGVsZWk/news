@@ -7,6 +7,7 @@ from flask import render_template
 from flask import request
 from flask import session
 
+from info import constants
 from info import db
 from info.models import User, News, Category
 from info.utils.commons import user_login_data
@@ -142,9 +143,9 @@ def news_edit_detail():
     category_id = request.form.get("category_id")
 
     # 3.校验参数，为空校验
-    # if not all([news_id,title,digest,content,index_image,category_id]):
-    # TODO 收不到图片
-    if not all([news_id,title,digest,content,category_id]):
+    if not all([news_id,title,digest,content,index_image,category_id]):
+
+    # if not all([news_id,title,digest,content,category_id]):
         return jsonify(errno=RET.PARAMERR,errmsg="参数不全")
 
     # 4.根据新闻编号，获取新闻对象
@@ -155,19 +156,19 @@ def news_edit_detail():
         return jsonify(errno=RET.DBERR,errmsg="获取新闻失败")
 
     # 5.上传图片
-    # try:
-    #     image_name = image_storage(index_image.read())
-    # except Exception as e:
-    #     current_app.logger.error(e)
-    #     request jsonify(errno=RET.THIRDERR,errmsg="七牛云异常")
+    try:
+        image_name = image_storage(index_image.read())
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.THIRDERR,errmsg="七牛云异常")
     # 6.判断图片是否上传成功
-    # if not image_name:return jsonify(errno=RET.DATAERR,errmsg="图片上传失败")
+    if not image_name:return jsonify(errno=RET.DATAERR,errmsg="图片上传失败")
 
     # 7.设置编辑信息，到对象列表
     news.title = title
     news.digest = digest
     news.content = content
-    news.index_image_url = "ASDHKHQ"
+    news.index_image_url = constants.QINIU_DOMIN_PREFIX + image_name
     news.category_id = category_id
 
     # 8.返回响应
