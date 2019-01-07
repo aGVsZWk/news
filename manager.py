@@ -13,7 +13,7 @@
 5.日志信息配置
 
 6.数据库迁移配置
-"""""
+"""
 import random
 from datetime import datetime, timedelta
 
